@@ -18,11 +18,11 @@ public class SearchAutoController {
     /**
      * Get autocomplete suggestions (NO frequency increment)
      * Called on every keystroke
-     * POST /api/search-suggest
+     * POST /api/search-autocomplete
      * Body: "covid" (plain text)
      * Response: [{ "term": "covid", "frequency": 15 }, ...]
      */
-    @PostMapping("/search-suggest")
+    @PostMapping("/search-autocomplete")
     public List<Map<String, Object>> getSuggestions(@RequestBody String term,
                                                      @RequestParam(defaultValue = "10") int limit) {
         return searchService.getSuggestions(term, limit);
@@ -31,11 +31,11 @@ public class SearchAutoController {
     /**
      * Increment search frequency when user actually searches
      * Called ONLY when user presses Enter or selects a suggestion
-     * POST /api/search-increment
+     * POST /api/search-autocomplete/increment
      * Body: "covid" (plain text)
      * Response: "Frequency incremented"
      */
-    @PostMapping("/search-increment")
+    @PostMapping("/search-autocomplete/increment")
     public String incrementFrequency(@RequestBody String term) {
         searchService.incrementSearchFrequency(term);
         return "Frequency incremented for: " + term;
