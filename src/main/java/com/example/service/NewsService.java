@@ -37,8 +37,8 @@ public class NewsService {
         if (sectionFilter != null && !sectionFilter.trim().isEmpty() && !sectionFilter.equals("all")) {
             System.out.println("DEBUG: Adding section filter: " + sectionFilter);
             
-            // Use case-insensitive regex for section matching
-            String sectionPattern = "^" + Pattern.quote(sectionFilter.trim()) + "$";
+            // Use case-insensitive regex for section matching, allowing for optional surrounding quotes
+            String sectionPattern = "^\"?" + Pattern.quote(sectionFilter.trim()) + "\"?$";
             query.append("Section", new Document("$regex", sectionPattern).append("$options", "i"));
         }
 
