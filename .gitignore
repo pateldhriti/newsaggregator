@@ -1,0 +1,16 @@
+# Build output
+target/
+
+# IDE settings
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# JARs
+*.jar
+
+# Secrets / Config
+*.env
+application.properties
