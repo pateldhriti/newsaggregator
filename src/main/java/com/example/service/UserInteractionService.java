@@ -172,7 +172,7 @@ public class UserInteractionService {
                 // If it's a search, give it higher weight!
                 if ("search".equals(doc.getString("type"))) {
                     textToAnalyze = doc.getString("query");
-                    weight = 3; // Searches are 3x more important than clicks
+                    weight = 10; // Searches are 10x more important than clicks (Boosted for immediate impact)
                 } else {
                     // It's a click
                     textToAnalyze = doc.getString("articleTitle");

@@ -87,7 +87,7 @@ public class RecommendationService {
         String articleText = (article.getTitle() + " " + article.getDescription()).toLowerCase();
         for (String keyword : keywords) {
             if (articleText.contains(keyword.toLowerCase())) {
-                score += 5.0;
+                score += 20.0; // Strong boost for keyword matches
             }
         }
 
