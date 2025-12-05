@@ -100,11 +100,40 @@ public class UserInteractionService {
     }
 
     /**
-     * Get user preferences based on interaction history
+     * Track a user's search query
+     */
+    public void trackSearch(String userId, String query) {
+        try {
+            if (userId == null || query == null || query.trim().isEmpty()) {
+                return;
+            }
+
+            Document interaction = new Document()
+                    .append("userId", userId)
+                    .append("type", "search")
+                    .append("query", query.trim())
+                    .append("timestamp", LocalDateTime.now().toString());
+
+            getCollection().insertOne(interaction);
+            System.out.println("✅ Tracked search: " + userId + " -> " + query);
+
+        } catch (Exception e) {
+            System.err.println("❌ Error tracking search: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Get user preferences based on interaction history (Clicks + Searches)
      */
     public Map<String, Object> getUserPreferences(String userId) {
         try {
-            List<UserInteraction> history = getUserHistory(userId, 50);
+            // Get recent history (clicks and searches)
+            List<Document> history = new ArrayList<>();
+            getCollection()
+                    .find(Filters.eq("userId", userId))
+                    .sort(Sorts.descending("timestamp"))
+                    .limit(50)
+                    .into(history);
             
             if (history.isEmpty()) {
                 return Map.of(
@@ -113,22 +142,22 @@ public class UserInteractionService {
                 );
             }
 
-            // Count section frequencies
+            // 1. Calculate Section Preferences (from clicks)
             Map<String, Long> sectionCounts = history.stream()
-                    .filter(i -> i.getSection() != null)
+                    .filter(doc -> !doc.containsKey("type") || "click".equals(doc.getString("type"))) // Assume missing type is click (legacy data)
+                    .filter(doc -> doc.getString("section") != null)
                     .collect(Collectors.groupingBy(
-                            UserInteraction::getSection,
+                            doc -> doc.getString("section"),
                             Collectors.counting()
                     ));
 
-            // Get top 3 sections
             List<String> favoriteSections = sectionCounts.entrySet().stream()
                     .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                     .limit(3)
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
 
-            // Extract keywords from titles
+            // 2. Calculate Keywords (from Clicks AND Searches)
             Map<String, Integer> wordFrequency = new HashMap<>();
             Set<String> stopWords = new HashSet<>(Arrays.asList(
                     "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
@@ -136,25 +165,37 @@ public class UserInteractionService {
                     "has", "have", "had", "will", "would", "could", "should", "may", "might"
             ));
 
-            for (UserInteraction interaction : history) {
-                if (interaction.getArticleTitle() != null) {
-                    String[] words = interaction.getArticleTitle()
+            for (Document doc : history) {
+                String textToAnalyze = "";
+                int weight = 1;
+
+                // If it's a search, give it higher weight!
+                if ("search".equals(doc.getString("type"))) {
+                    textToAnalyze = doc.getString("query");
+                    weight = 3; // Searches are 3x more important than clicks
+                } else {
+                    // It's a click
+                    textToAnalyze = doc.getString("articleTitle");
+                }
+
+                if (textToAnalyze != null) {
+                    String[] words = textToAnalyze
                             .toLowerCase()
                             .replaceAll("[^a-z0-9\\s]", "")
                             .split("\\s+");
                     
                     for (String word : words) {
                         if (word.length() > 3 && !stopWords.contains(word)) {
-                            wordFrequency.put(word, wordFrequency.getOrDefault(word, 0) + 1);
+                            wordFrequency.put(word, wordFrequency.getOrDefault(word, 0) + weight);
                         }
                     }
                 }
             }
 
-            // Get top 10 keywords
+            // Get top 15 keywords (increased from 10 to accommodate search terms)
             List<String> keywords = wordFrequency.entrySet().stream()
                     .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                    .limit(10)
+                    .limit(15)
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
 

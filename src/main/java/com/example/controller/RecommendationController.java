@@ -51,6 +51,33 @@ public class RecommendationController {
     }
 
     /**
+     * Track user search query
+     * POST /api/recommendations/track-search
+     * Body: { "userId": "user@email.com", "query": "pakistan" }
+     */
+    @PostMapping("/track-search")
+    public ResponseEntity<Map<String, String>> trackSearch(@RequestBody Map<String, String> request) {
+        try {
+            String userId = request.get("userId");
+            String query = request.get("query");
+
+            if (userId == null || query == null) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("status", "error", "message", "userId and query are required"));
+            }
+
+            userInteractionService.trackSearch(userId, query);
+
+            return ResponseEntity.ok(Map.of("status", "success", "message", "Search tracked"));
+
+        } catch (Exception e) {
+            System.err.println("❌ Error tracking search: " + e.getMessage());
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("status", "error", "message", e.getMessage()));
+        }
+    }
+
+    /**
      * Get personalized recommendations
      * GET /api/recommendations?userId=user@email.com&limit=20
      */
