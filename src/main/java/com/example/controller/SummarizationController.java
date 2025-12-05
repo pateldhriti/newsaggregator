@@ -22,5 +22,5 @@ public class SummarizationController {
         String text = request.get("text");
         String summary = summarizationService.summarizeText(text);
         return Map.of("summary", summary);
-    }
+    }
 }
