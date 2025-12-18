@@ -1,247 +1,355 @@
-# 📰 Intelligent News Aggregator Platform
+# 📰 News Aggregator - Backend (Java/Spring Boot)
 
-A sophisticated full-stack news aggregation and personalization platform that combines AI-powered recommendations, real-time web crawling, and advanced search capabilities to deliver a personalized news reading experience.
+A sophisticated Java-based backend system for news aggregation, processing, and intelligent analysis. Implements all 10 required features using advanced algorithms and data structures.
 
-## 🌟 Project Overview
+## 🎯 Project Overview
 
-This project is an intelligent news aggregation system that crawls multiple news sources (BBC, The Guardian, NY Times, CBC), processes articles using AI/ML techniques, and provides personalized recommendations based on user interactions. The platform features advanced search with autocomplete, spell-checking, text-to-speech, AI summarization, and pattern detection capabilities.
-
-### Key Highlights
-
-- **Multi-Source News Aggregation**: Automated crawlers for BBC, Guardian, NY Times, and CBC
-- **AI-Powered Recommendations**: Personalized content based on user reading patterns and search history
-- **Advanced Search**: Autocomplete suggestions, spell-checking, and search frequency tracking
-- **AI Summarization**: Generate concise summaries of articles using deep learning models
-- **Text-to-Speech**: Convert articles to audio for accessibility
-- **Pattern Detection**: Identify trending topics and news patterns
-- **User Authentication**: Secure registration and login with BCrypt password encryption
-- **Modern UI**: Responsive React interface with Tailwind CSS and smooth animations
+This backend service automatically collects, processes, and analyzes news articles from multiple sources (BBC, Guardian, NY Times, CBC) using Java and Spring Boot. It provides RESTful APIs for the frontend application and implements advanced computing concepts including web crawling, natural language processing, and machine learning.
 
 ---
 
-## 🏗️ Architecture
+## ✨ Core Features (All 10 Implemented)
 
-### Technology Stack
+### 1. **Web Crawler** 🌐
+- **Technology**: Selenium WebDriver 4.11.0
+- **Implementation**: 5 dedicated crawler classes
+- **Sources**: BBC, Guardian, NY Times, CBC
+- **Features**:
+  - Multi-threaded crawling
+  - Polite crawling with delays
+  - Scheduled automated updates
+  - CSV export functionality
+  - Respects robots.txt
 
-#### Backend (`newsaggregator`)
-- **Framework**: Spring Boot 3.4.0
-- **Language**: Java 23
-- **Database**: MongoDB (NoSQL)
-- **AI/ML**: 
-  - Deep Java Library (DJL) 0.24.0
-  - PyTorch Engine for model inference
-  - HuggingFace Tokenizers
-- **Web Crawling**: Selenium WebDriver 4.11.0
-- **NLP**: LanguageTool 6.4 for spell-checking
-- **Security**: Spring Security Crypto (BCrypt)
-- **Build Tool**: Maven
-- **Containerization**: Docker & Docker Compose
+**Files**:
+- `BBCCrawler.java`
+- `GuardianCrawler.java`
+- `NYTimesCrawler.java`
+- `CBCCrawler.java`
+- `GlobalCrawler.java`
 
-#### Frontend (`newshub`)
-- **Framework**: React 19.1.1
-- **Build Tool**: Vite (Rolldown)
-- **State Management**: Redux Toolkit 2.10.1
-- **Routing**: React Router DOM 7.9.5
-- **Styling**: Tailwind CSS 4.1.17
-- **HTTP Client**: Axios 1.13.2
-- **Icons**: Lucide React 0.554.0
+### 2. **HTML Parser** 📄
+- **Technology**: Selenium WebDriver + JSoup
+- **Implementation**: Integrated within crawlers
+- **Features**:
+  - DOM parsing
+  - Content extraction (title, description, date, author)
+  - Advertisement removal
+  - Data normalization
+  - Structured data conversion
 
-### System Architecture
+**File**: `DataCleaner.java`
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        Frontend (React)                      │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
-│  │   Home   │  │ All News │  │  Login   │  │ Profile  │   │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │         Redux Store (Auth, News, Recommendations)    │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-                            ↕ REST API
-┌─────────────────────────────────────────────────────────────┐
-│                   Backend (Spring Boot)                      │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │                    Controllers                        │   │
-│  │  News │ Auth │ Recommendation │ Search │ Summarize   │   │
-│  └──────────────────────────────────────────────────────┘   │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │                      Services                         │   │
-│  │  Crawler │ Recommendation │ SpellCheck │ TTS │ AI    │   │
-│  └──────────────────────────────────────────────────────┘   │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │                    Repositories                       │   │
-│  │           MongoDB Data Access Layer                   │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-                            ↕
-┌─────────────────────────────────────────────────────────────┐
-│                    MongoDB Database                          │
-│  Collections: news, users, userInteractions, searchTerms    │
-└─────────────────────────────────────────────────────────────┘
-                            ↕
-┌─────────────────────────────────────────────────────────────┐
-│                   External Services                          │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
-│  │   BBC    │  │ Guardian │  │ NY Times │  │   CBC    │   │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
-│                    (Selenium Crawlers)                       │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## ✨ Features
-
-### 1. **News Aggregation & Crawling**
-- **Multi-Source Crawlers**: Automated Selenium-based crawlers for:
-  - BBC News
-  - The Guardian
-  - New York Times
-  - CBC News
-- **Scheduled Updates**: Automatic crawling at regular intervals
-- **Data Cleaning**: Automated data sanitization and normalization
-- **CSV Export**: Backup news data to CSV files
-- **MongoDB Integration**: Seamless upload to database
-
-### 2. **Personalized Recommendations**
-- **User Interaction Tracking**: Records article clicks and reading patterns
-- **Search History Analysis**: Incorporates search queries into recommendation algorithm
-- **Weighted Scoring**: Balances between clicked articles and search interests
-- **Real-time Updates**: Recommendations update as users interact with content
-- **Category-based Filtering**: Recommendations by news category
-
-### 3. **Advanced Search**
-- **Full-Text Search**: Search across article titles, content, and metadata
-- **Autocomplete Suggestions**: Real-time search suggestions based on:
-  - Historical search frequency
-  - Popular search terms
-  - Fuzzy matching
-- **Spell Checking**: LanguageTool integration for:
+### 3. **Spell Checking System** ✍️
+- **Algorithm**: Levenshtein Distance (Edit Distance)
+- **Technology**: LanguageTool 6.4
+- **Implementation**: `SpellCheckService.java`
+- **Features**:
+  - Dictionary built from articles
   - "Did you mean?" suggestions
-  - Automatic typo correction
-  - Multi-language support
-- **Search Frequency Tracking**: Analytics on popular search terms
-- **Category Filtering**: Filter by news categories (World, Politics, Tech, Sports, etc.)
+  - Frequency-based word ranking
+  - Multi-word suggestions
+  - Continuous vocabulary updates
 
-### 4. **AI-Powered Features**
-- **Article Summarization**: 
-  - Deep learning model for text summarization
-  - Generates concise article summaries
-  - Adjustable summary length
-- **Text-to-Speech**: 
-  - Convert articles to audio
-  - Accessibility feature for visually impaired users
-- **Pattern Detection**: 
-  - Identify trending topics
-  - Detect news patterns across sources
-  - Temporal analysis of news coverage
+**Algorithm Complexity**: O(m × n) where m, n are string lengths
 
-### 5. **User Management**
-- **Secure Authentication**: 
+**Key Methods**:
+```java
+public Map<String, Object> checkSpelling(String inputText)
+public int levenshteinDistance(String a, String b)
+public List<String> getSuggestions(String word, int count)
+```
+
+### 4. **Word Completion** 🔤
+- **Data Structure**: Trie-like implementation with HashMap
+- **Implementation**: `SearchAutoCompleteService.java`
+- **Features**:
+  - Real-time autocomplete
+  - Prefix matching
+  - Frequency-based ranking
+  - Historical search integration
+  - Trending topics prioritization
+
+**Key Methods**:
+```java
+public List<Map<String, Object>> getSuggestions(String term, int limit)
+public void incrementSearchFrequency(String term)
+```
+
+### 5. **Frequency Count Analysis** 📊
+- **Data Structure**: HashMap
+- **Implementation**: Multiple services
+- **Features**:
+  - Word occurrence tracking
+  - Trending topic identification
+  - Statistical insights
+  - Time-based analysis
+  - MongoDB persistence
+
+**Files**:
+- `SearchFrequencyService.java`
+- `SearchAutoCompleteService.java`
+- `RankedArticlesService.java`
+
+### 6. **Search Frequency Tracking** 🔍
+- **Database**: MongoDB collection `search_frequency`
+- **Implementation**: `SearchFrequencyService.java`
+- **Features**:
+  - User search pattern monitoring
+  - Popular query tracking
+  - Time-series analysis
+  - Trend identification
+  - Real-time updates
+
+**Key Methods**:
+```java
+public void incrementSearchFrequency(String term)
+public List<Map<String, Object>> getTopSearches(int limit)
+```
+
+### 7. **Page Ranking System** ⭐
+- **Algorithm**: TF-IDF (Term Frequency-Inverse Document Frequency)
+- **Implementation**: `RankedArticlesService.java`
+- **Features**:
+  - TF-IDF scoring
+  - Stop words filtering
+  - Title weighting (3x importance)
+  - Parallel processing
+  - Pagination support
+
+**Algorithm**:
+- **TF**: `tf = count(term) / total_terms`
+- **IDF**: `idf = log(total_docs / docs_with_term)`
+- **Score**: `Σ(TF × IDF)` for all terms
+
+**Key Methods**:
+```java
+public List<News> getRankedNews()
+public List<News> getTopRankedNews(int page, int limit)
+private double calculateTFIDFScore(String content, Map<String, Integer> df, int totalDocs)
+```
+
+### 8. **Inverted Indexing** 🗂️
+- **Data Structure**: HashMap + MongoDB
+- **Implementation**: `SearchAutoCompleteService.java`
+- **Features**:
+  - Word-to-article mapping
+  - Instant search retrieval
+  - No full article scanning
+  - Efficient updates
+  - Persistent storage
+
+**Complexity**: O(1) average lookup time
+
+### 9. **Data Validation** ✅
+- **Technology**: Regular Expressions (RegEx)
+- **Implementation**: `DataCleaner.java`
+- **Features**:
+  - URL validation
+  - Date format validation
+  - Email validation
+  - Text sanitization
+  - HTML tag removal
+  - Invalid data filtering
+
+**RegEx Patterns**:
+- URL: `^https?://.*`
+- Email: `^[A-Za-z0-9+_.-]+@(.+)$`
+- HTML tags: `<[^>]+>`
+
+### 10. **Pattern Recognition** 🔎
+- **Technology**: Regular Expressions (RegEx)
+- **Implementation**: `PatternDetectionService.java`
+- **Features**:
+  - Trending topic identification
+  - Recurring theme detection
+  - Named entity extraction
+  - Date/location pattern matching
+  - Citation pattern recognition
+  - Spam/low-quality filtering
+
+---
+
+## 🚀 Additional Features
+
+### AI/ML Integration
+- **Article Summarization** (`SummarizationService.java`)
+  - Deep Java Library (DJL) 0.24.0
+  - PyTorch engine
+  - HuggingFace tokenizers
+  
+- **Text-to-Speech** (`TextToSpeechService.java`)
+  - Audio conversion for accessibility
+
+- **Personalized Recommendations** (`RecommendationService.java`)
+  - User interaction tracking
+  - Behavior-based recommendations
+  - Search history integration
+
+### User Management
+- **Authentication** (`AuthService.java`)
   - User registration and login
-  - BCrypt password hashing
+  - BCrypt password encryption
   - Session management
-- **User Profiles**: 
-  - Personalized user dashboard
-  - Reading history
-  - Saved preferences
-- **Protected Routes**: Frontend route protection for authenticated users
 
-### 6. **Modern User Interface**
-- **Responsive Design**: Mobile-first approach with Tailwind CSS
-- **Dark/Light Theme**: User preference support
-- **Smooth Animations**: Enhanced UX with transitions
-- **Infinite Scroll**: Seamless content loading
-- **Pagination**: Page-based navigation with Previous/Next controls
-- **Category Tabs**: Modern horizontal category navigation
-- **Search Bar**: Integrated search with autocomplete dropdown
-- **Toast Notifications**: User feedback for actions
+- **User Interactions** (`UserInteractionService.java`)
+  - Click tracking
+  - Reading history
+  - Preference learning
+
+---
+
+## 🛠️ Technology Stack
+
+### Core Technologies
+- **Java**: 23
+- **Spring Boot**: 3.4.0
+- **Database**: MongoDB (NoSQL)
+- **Build Tool**: Maven
+
+### Libraries & Frameworks
+- **Selenium WebDriver**: 4.11.0 (Web crawling)
+- **LanguageTool**: 6.4 (Spell checking)
+- **Deep Java Library (DJL)**: 0.24.0 (AI/ML)
+- **PyTorch Engine**: Model inference
+- **HuggingFace Tokenizers**: NLP
+- **Spring Security Crypto**: BCrypt password hashing
+- **Dotenv Java**: Environment variables
+
+### Dependencies (pom.xml)
+```xml
+<dependencies>
+    <!-- Spring Boot -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    
+    <!-- MongoDB -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+    
+    <!-- Selenium -->
+    <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-java</artifactId>
+        <version>4.11.0</version>
+    </dependency>
+    
+    <!-- Deep Java Library -->
+    <dependency>
+        <groupId>ai.djl</groupId>
+        <artifactId>api</artifactId>
+        <version>0.24.0</version>
+    </dependency>
+    
+    <!-- LanguageTool -->
+    <dependency>
+        <groupId>org.languagetool</groupId>
+        <artifactId>languagetool-core</artifactId>
+        <version>6.4</version>
+    </dependency>
+</dependencies>
+```
 
 ---
 
 ## 📁 Project Structure
 
 ```
-News crawler/
-├── newsaggregator/              # Backend (Spring Boot)
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/com/example/
-│   │   │   │   ├── config/              # Configuration classes
-│   │   │   │   │   ├── MongoConfig.java
-│   │   │   │   │   ├── WebConfig.java
-│   │   │   │   │   └── CorsConfig.java
-│   │   │   │   ├── controller/          # REST API Controllers
-│   │   │   │   │   ├── NewsController.java
-│   │   │   │   │   ├── AuthController.java
-│   │   │   │   │   ├── RecommendationController.java
-│   │   │   │   │   ├── SearchAutoController.java
-│   │   │   │   │   ├── SpellCheckController.java
-│   │   │   │   │   ├── SummarizationController.java
-│   │   │   │   │   ├── TextToSpeechController.java
-│   │   │   │   │   ├── PatternDetectionController.java
-│   │   │   │   │   └── ...
-│   │   │   │   ├── service/             # Business Logic
-│   │   │   │   │   ├── NewsService.java
-│   │   │   │   │   ├── CrawlerService.java
-│   │   │   │   │   ├── RecommendationService.java
-│   │   │   │   │   ├── AutoCompleteService.java
-│   │   │   │   │   ├── SpellCheckService.java
-│   │   │   │   │   ├── SummarizationService.java
-│   │   │   │   │   ├── TextAnalysisService.java
-│   │   │   │   │   ├── UserInteractionService.java
-│   │   │   │   │   └── ...
-│   │   │   │   ├── crawler/             # Web Crawlers
-│   │   │   │   │   ├── BBCCrawler.java
-│   │   │   │   │   ├── GuardianCrawler.java
-│   │   │   │   │   ├── NYTimesCrawler.java
-│   │   │   │   │   ├── CBCCrawler.java
-│   │   │   │   │   └── GlobalCrawler.java
-│   │   │   │   ├── model/               # Data Models
-│   │   │   │   │   ├── News.java
-│   │   │   │   │   ├── User.java
-│   │   │   │   │   └── UserInteraction.java
-│   │   │   │   ├── repository/          # MongoDB Repositories
-│   │   │   │   │   └── UserRepository.java
-│   │   │   │   ├── db/                  # Database Utilities
-│   │   │   │   │   └── MongoDBConnection.java
-│   │   │   │   └── NewsAggregatorApplication.java
-│   │   │   └── resources/
-│   │   │       └── application.properties
-│   │   └── test/                        # Unit Tests
-│   ├── pom.xml                          # Maven Dependencies
-│   ├── Dockerfile                       # Docker Configuration
-│   └── docker-compose.yml               # Docker Compose Setup
-│
-└── newshub/                     # Frontend (React + Vite)
-    ├── src/
-    │   ├── components/                  # React Components
-    │   │   ├── Home.jsx                 # Homepage with featured news
-    │   │   ├── AllNews.jsx              # All news with search & filters
-    │   │   ├── Navbar.jsx               # Navigation bar
-    │   │   ├── Recommendations.jsx      # Personalized recommendations
-    │   │   ├── SummarizeModal.jsx       # AI summarization modal
-    │   │   ├── Loader.jsx               # Loading spinner
-    │   │   ├── Toast.jsx                # Notification component
-    │   │   └── ProtectedRoute.jsx       # Route protection
-    │   ├── pages/                       # Page Components
-    │   │   ├── Login.jsx                # Login page
-    │   │   ├── Register.jsx             # Registration page
-    │   │   └── Profile.jsx              # User profile
-    │   ├── features/                    # Redux Slices
-    │   │   ├── auth/                    # Authentication state
-    │   │   ├── news/                    # News state
-    │   │   ├── recommendation/          # Recommendation state
-    │   │   └── summarization/           # Summarization state
-    │   ├── app/                         # Redux Store
-    │   ├── utils/                       # Utility functions
-    │   ├── App.jsx                      # Main App component
-    │   └── main.jsx                     # Entry point
-    ├── public/                          # Static assets
-    ├── package.json                     # NPM Dependencies
-    ├── vite.config.js                   # Vite Configuration
-    └── tailwind.config.js               # Tailwind Configuration
+newsaggregator/
+├── src/
+│   ├── main/
+│   │   ├── java/com/example/
+│   │   │   ├── NewsAggregatorApplication.java    # Main application
+│   │   │   ├── config/                           # Configuration
+│   │   │   │   ├── MongoConfig.java
+│   │   │   │   ├── WebConfig.java
+│   │   │   │   └── CorsConfig.java
+│   │   │   ├── controller/                       # REST Controllers
+│   │   │   │   ├── NewsController.java
+│   │   │   │   ├── AuthController.java
+│   │   │   │   ├── RecommendationController.java
+│   │   │   │   ├── SearchAutoController.java
+│   │   │   │   ├── SpellCheckController.java
+│   │   │   │   ├── SummarizationController.java
+│   │   │   │   ├── TextToSpeechController.java
+│   │   │   │   ├── PatternDetectionController.java
+│   │   │   │   └── RankedArticlesController.java
+│   │   │   ├── service/                          # Business Logic
+│   │   │   │   ├── NewsService.java
+│   │   │   │   ├── CrawlerService.java
+│   │   │   │   ├── SpellCheckService.java
+│   │   │   │   ├── SearchAutoCompleteService.java
+│   │   │   │   ├── SearchFrequencyService.java
+│   │   │   │   ├── RankedArticlesService.java
+│   │   │   │   ├── PatternDetectionService.java
+│   │   │   │   ├── RecommendationService.java
+│   │   │   │   ├── SummarizationService.java
+│   │   │   │   ├── TextToSpeechService.java
+│   │   │   │   ├── UserInteractionService.java
+│   │   │   │   ├── AuthService.java
+│   │   │   │   ├── DataCleaner.java
+│   │   │   │   └── CSVtoMongoUploader.java
+│   │   │   ├── crawler/                          # Web Crawlers
+│   │   │   │   ├── BBCCrawler.java
+│   │   │   │   ├── GuardianCrawler.java
+│   │   │   │   ├── NYTimesCrawler.java
+│   │   │   │   ├── CBCCrawler.java
+│   │   │   │   └── GlobalCrawler.java
+│   │   │   ├── model/                            # Data Models
+│   │   │   │   ├── News.java
+│   │   │   │   ├── User.java
+│   │   │   │   └── UserInteraction.java
+│   │   │   ├── repository/                       # MongoDB Repositories
+│   │   │   │   └── UserRepository.java
+│   │   │   └── db/                               # Database Utilities
+│   │   │       └── MongoDBConnection.java
+│   │   └── resources/
+│   │       └── application.properties            # Configuration
+│   └── test/                                     # Unit Tests
+├── pom.xml                                       # Maven Dependencies
+├── Dockerfile                                    # Docker Configuration
+├── docker-compose.yml                            # Docker Compose
+└── README.md                                     # This file
+```
+
+---
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<database>?retryWrites=true&w=majority
+MONGO_DATABASE=news_aggregator
+```
+
+### application.properties
+
+```properties
+# MongoDB Configuration
+spring.data.mongodb.uri=${MONGO_URI}
+spring.data.mongodb.database=${MONGO_DATABASE}
+
+# Server Configuration
+server.port=8080
+server.servlet.context-path=/
+
+# CORS Configuration
+cors.allowed-origins=http://localhost:5173
+
+# Crawler Configuration
+crawler.schedule.interval=3600000  # 1 hour in milliseconds
+crawler.max-articles=100
+
+# AI Model Configuration
+ai.model.path=/models/summarization
+ai.model.max-length=150
 ```
 
 ---
@@ -250,87 +358,37 @@ News crawler/
 
 ### Prerequisites
 
-- **Java**: JDK 23 or higher
-- **Node.js**: v18 or higher
-- **MongoDB**: MongoDB Atlas account or local MongoDB instance
+- **Java JDK**: 23 or higher
 - **Maven**: 3.6 or higher
+- **MongoDB**: Atlas account or local instance
 - **Docker** (optional): For containerized deployment
 
-### Environment Setup
+### Installation
 
-#### 1. Backend Configuration
-
-Create a `.env` file in the `newsaggregator` directory:
-
-```env
-MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<database>?retryWrites=true&w=majority
-MONGO_DATABASE=news_aggregator
-```
-
-Or configure `application.properties`:
-
-```properties
-spring.data.mongodb.uri=${MONGO_URI}
-spring.data.mongodb.database=${MONGO_DATABASE}
-server.port=8080
-```
-
-#### 2. Frontend Configuration
-
-Create a `.env` file in the `newshub` directory:
-
-```env
-VITE_API_URL=http://localhost:8080
-```
-
-Update `vite.config.js` for API proxy:
-
-```javascript
-export default defineConfig({
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-      },
-    },
-  },
-});
-```
-
----
-
-## 📦 Installation
-
-### Backend Setup
-
+1. **Clone the repository**
 ```bash
-# Navigate to backend directory
+git clone <repository-url>
 cd newsaggregator
+```
 
-# Install dependencies (Maven will download automatically)
+2. **Configure environment variables**
+```bash
+# Create .env file
+echo "MONGO_URI=your_mongodb_uri" > .env
+echo "MONGO_DATABASE=news_aggregator" >> .env
+```
+
+3. **Install dependencies**
+```bash
 mvn clean install
+```
 
-# Run the application
+4. **Run the application**
+```bash
 mvn spring-boot:run
 ```
 
 The backend will start on `http://localhost:8080`
-
-### Frontend Setup
-
-```bash
-# Navigate to frontend directory
-cd newshub
-
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-```
-
-The frontend will start on `http://localhost:5173`
 
 ---
 
@@ -338,12 +396,7 @@ The frontend will start on `http://localhost:5173`
 
 ### Using Docker Compose
 
-The project includes a Docker Compose configuration for Selenium-based crawlers:
-
 ```bash
-# Navigate to backend directory
-cd newsaggregator
-
 # Start services
 docker-compose up -d
 
@@ -354,10 +407,10 @@ docker-compose logs -f
 docker-compose down
 ```
 
-**Services:**
-- **Selenium Chrome**: Standalone Chrome browser for web crawling (Port 4444)
-- **VNC Viewer**: Debug browser sessions (Port 7900)
-- **Java Crawler**: Automated news crawling service
+**Services**:
+- Selenium Chrome (Port 4444)
+- VNC Viewer (Port 7900)
+- Java Crawler Service
 
 ---
 
@@ -410,12 +463,40 @@ GET /api/news/category/{category}?page=0&size=20
 GET /api/news/search?query=technology&page=0&size=20
 ```
 
-#### Get Single Article
+### Search & Autocomplete
+
+#### Autocomplete Suggestions
 ```http
-GET /api/news/{id}
+GET /api/search-suggest?query=tech&limit=5
 ```
 
-### Recommendation Endpoints
+#### Spell Check
+```http
+POST /api/spellcheck
+Content-Type: application/json
+
+{
+  "text": "technolgy news"
+}
+```
+
+#### Increment Search Frequency
+```http
+POST /api/search-increment
+Content-Type: application/json
+
+{
+  "userId": "user123",
+  "query": "climate change"
+}
+```
+
+### Ranking & Recommendations
+
+#### Get Ranked Articles
+```http
+GET /api/ranked-articles?page=1&limit=20
+```
 
 #### Get Personalized Recommendations
 ```http
@@ -431,34 +512,6 @@ Content-Type: application/json
   "userId": "user123",
   "articleId": "article456",
   "interactionType": "click"
-}
-```
-
-#### Track Search Query
-```http
-POST /api/search-increment
-Content-Type: application/json
-
-{
-  "userId": "user123",
-  "query": "climate change"
-}
-```
-
-### Search Endpoints
-
-#### Autocomplete Suggestions
-```http
-GET /api/search-suggest?query=tech&limit=5
-```
-
-#### Spell Check
-```http
-POST /api/spellcheck
-Content-Type: application/json
-
-{
-  "text": "technolgy news"
 }
 ```
 
@@ -498,32 +551,9 @@ POST /api/admin/crawl/{source}
 ```
 Sources: `bbc`, `guardian`, `nytimes`, `cbc`, `all`
 
-#### Get Crawler Status
-```http
-GET /api/admin/crawler-status
-```
-
 ---
 
-## 🧪 Testing
-
-### Backend Tests
-
-```bash
-cd newsaggregator
-mvn test
-```
-
-### Frontend Tests
-
-```bash
-cd newshub
-npm run test
-```
-
----
-
-## 📊 Database Schema
+## 🗄️ Database Schema
 
 ### MongoDB Collections
 
@@ -541,6 +571,7 @@ npm run test
   "publishedAt": Date,
   "author": String,
   "tags": [String],
+  "score": Double,         // TF-IDF score
   "createdAt": Date,
   "updatedAt": Date
 }
@@ -574,12 +605,12 @@ npm run test
 }
 ```
 
-#### `searchTerms` Collection
+#### `search_frequency` Collection
 ```javascript
 {
   "_id": ObjectId,
   "term": String,
-  "frequency": Number,
+  "count": Number,
   "lastSearched": Date,
   "userId": String
 }
@@ -587,164 +618,17 @@ npm run test
 
 ---
 
-## 🎨 Frontend Features
+## 🧪 Testing
 
-### Components Overview
-
-#### **Home Component**
-- Featured news carousel
-- Category-wise news sections
-- Trending articles
-- Quick search access
-
-#### **AllNews Component**
-- Comprehensive news listing
-- Advanced search bar with autocomplete
-- Category filter tabs
-- Pagination controls
-- Infinite scroll option
-- Article cards with hover effects
-
-#### **Recommendations Component**
-- Personalized news feed
-- Based on user reading history
-- Search query integration
-- Category-specific recommendations
-
-#### **Navbar Component**
-- Responsive navigation
-- User authentication status
-- Quick links to all sections
-- Search integration
-
-### Redux State Management
-
-#### **Auth Slice**
-- User authentication state
-- Login/logout actions
-- Token management
-- Protected route handling
-
-#### **News Slice**
-- All news articles
-- Pagination state
-- Search results
-- Category filters
-- Loading states
-
-#### **Recommendation Slice**
-- Personalized recommendations
-- User interaction tracking
-- Recommendation algorithm state
-
-#### **Summarization Slice**
-- Article summaries
-- AI model state
-- Summary cache
-
----
-
-## 🔧 Configuration
-
-### Backend Configuration
-
-#### `application.properties`
-```properties
-# MongoDB Configuration
-spring.data.mongodb.uri=${MONGO_URI}
-spring.data.mongodb.database=news_aggregator
-
-# Server Configuration
-server.port=8080
-server.servlet.context-path=/
-
-# CORS Configuration
-cors.allowed-origins=http://localhost:5173
-
-# Crawler Configuration
-crawler.schedule.interval=3600000  # 1 hour in milliseconds
-crawler.max-articles=100
-
-# AI Model Configuration
-ai.model.path=/models/summarization
-ai.model.max-length=150
-```
-
-#### `pom.xml` Key Dependencies
-- Spring Boot Starter Web
-- Spring Boot Starter Data MongoDB
-- Deep Java Library (DJL) API & PyTorch
-- Selenium WebDriver
-- LanguageTool
-- Spring Security Crypto
-- Dotenv Java
-
-### Frontend Configuration
-
-#### `vite.config.js`
-```javascript
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 5173,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-      },
-    },
-  },
-});
-```
-
-#### `package.json` Key Dependencies
-- React 19.1.1
-- Redux Toolkit 2.10.1
-- React Router DOM 7.9.5
-- Axios 1.13.2
-- Tailwind CSS 4.1.17
-- Lucide React (Icons)
-
----
-
-## 🚦 Running the Full Stack
-
-### Development Mode
-
-**Terminal 1 - Backend:**
+### Run Tests
 ```bash
-cd newsaggregator
-mvn spring-boot:run
+mvn test
 ```
 
-**Terminal 2 - Frontend:**
-```bash
-cd newshub
-npm run dev
-```
-
-**Access the application:**
-- Frontend: `http://localhost:5173`
-- Backend API: `http://localhost:8080/api`
-
-### Production Build
-
-**Backend:**
-```bash
-cd newsaggregator
-mvn clean package
-java -jar target/news-aggregator-1.0-SNAPSHOT.jar
-```
-
-**Frontend:**
-```bash
-cd newshub
-npm run build
-npm run preview
-```
+### Test Coverage
+- Unit tests for services
+- Integration tests for controllers
+- Database tests for repositories
 
 ---
 
@@ -754,16 +638,13 @@ npm run preview
 - **CORS Protection**: Configured allowed origins
 - **Input Validation**: Server-side validation for all inputs
 - **SQL Injection Prevention**: MongoDB parameterized queries
-- **XSS Protection**: React's built-in XSS prevention
 - **Environment Variables**: Sensitive data in `.env` files
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Common Issues
-
-#### Backend won't start
+### Backend won't start
 ```bash
 # Check Java version
 java -version
@@ -775,23 +656,13 @@ mvn clean install -U
 # Verify MONGO_URI in .env file
 ```
 
-#### Frontend build errors
-```bash
-# Clear node_modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
-
-# Clear Vite cache
-rm -rf node_modules/.vite
-```
-
-#### MongoDB connection timeout
+### MongoDB connection timeout
 - Verify MongoDB Atlas IP whitelist
 - Check network connectivity
 - Validate connection string format
 - Ensure database user has proper permissions
 
-#### Selenium crawler not working
+### Selenium crawler not working
 ```bash
 # Restart Docker services
 docker-compose down
@@ -803,82 +674,48 @@ curl http://localhost:4444/status
 
 ---
 
-## 📈 Performance Optimization
+## 📊 Performance
 
-- **Backend Caching**: Redis integration for frequently accessed data
-- **Database Indexing**: MongoDB indexes on frequently queried fields
-- **Lazy Loading**: Frontend components loaded on demand
-- **Image Optimization**: Compressed images with lazy loading
-- **API Rate Limiting**: Prevent abuse and ensure fair usage
-- **CDN Integration**: Static assets served via CDN
+### Optimizations Implemented
+- Parallel processing for TF-IDF calculations
+- HashMap for O(1) lookups
+- MongoDB indexing for fast queries
+- Connection pooling
+- Caching for frequently accessed data
 
 ---
 
-## 🤝 Contributing
+## 👥 Team
 
-Contributions are welcome! Please follow these steps:
+**Group No. 11**
+- Bhavik Thumbadiya (110204126)
+- Shiv Patel (110191927)
+- Dhritiben Patel (110196105)
+- Dhruvi Patel (110202575)
+- Nishtha Pandya (110195567)
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+**Course**: COMP 8547 - Advanced Computing Concept  
+**Professor**: Prof. Olena Syrotkina  
+**University**: University of Windsor  
+**Semester**: Fall 2025
 
 ---
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
-
-## 👥 Authors
-
-- **Dhriti Patel** - *Initial work and development*
+This project is created for academic purposes.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- Spring Boot team for the excellent framework
-- React and Vite teams for modern frontend tooling
-- MongoDB for flexible NoSQL database
-- Deep Java Library (DJL) for AI/ML capabilities
-- Selenium for web automation
-- All open-source contributors
+- Spring Boot Framework
+- MongoDB
+- Selenium WebDriver
+- Deep Java Library
+- LanguageTool
 
 ---
 
-## 📞 Support
-
-For support, email your-email@example.com or open an issue in the repository.
-
----
-
-## 🗺️ Roadmap
-
-### Planned Features
-- [ ] Multi-language support
-- [ ] Mobile app (React Native)
-- [ ] Real-time notifications (WebSocket)
-- [ ] Social sharing integration
-- [ ] Bookmark and save articles
-- [ ] Email newsletter subscriptions
-- [ ] Advanced analytics dashboard
-- [ ] Sentiment analysis on articles
-- [ ] Video news integration
-- [ ] Podcast recommendations
-
----
-
-## 📚 Additional Resources
-
-- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
-- [React Documentation](https://react.dev)
-- [MongoDB Documentation](https://docs.mongodb.com)
-- [Deep Java Library](https://djl.ai)
-- [Tailwind CSS](https://tailwindcss.com)
-
----
-
-**Built with ❤️ using Spring Boot, React, and MongoDB**
+**Backend Version**: 1.0  
+**Last Updated**: December 2025
